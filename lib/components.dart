@@ -78,8 +78,8 @@ class _CalcState extends State<Calc> {
             secondValue = double.parse(input);
             expression += '=';
             calculate(firstValue!, secondValue!, operator);
-            expression = result.toString();
-            input = result.toString();
+            expression = result.toString() == 'null' ? '' : result.toString();
+            input = result.toString() == 'null' ? '' : result.toString();
             operator = '';
             firstValue = null;
             secondValue = null;
@@ -90,11 +90,13 @@ class _CalcState extends State<Calc> {
           if (input == "") {
             // trata a inserção do zero no início
             input = "0.";
+            expression += "0.";
           } else if (input.contains('.')) {
             // impede que mais de um ponto seja adicionado
             break;
           } else {
-            input = buttonValue;
+            input += buttonValue;
+            expression += buttonValue;
           }
           break;
 
@@ -119,8 +121,11 @@ class _CalcState extends State<Calc> {
           result = firstValue * secondValue;
           break;
         case '÷':
-          result = firstValue / secondValue;
-          break;
+          if (secondValue != 0) {
+            result = firstValue / secondValue;
+          } else {
+            reset();
+          }
       }
     });
     return;
